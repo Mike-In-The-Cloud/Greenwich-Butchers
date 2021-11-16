@@ -1,0 +1,95 @@
+﻿@model List<GreButchersEFCore_V2.Models.Stock>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<br />
+<div class="border backgroundWhite">
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-info">Product List</h2>
+        </div>
+        <div class="col-6 text-right">
+            <a asp-action="Create" class="btn btn-info"><i class="fas fa-folder-plus"></i> New Product </a>
+        </div>
+    </div>
+
+    <br />
+    <div>
+        <form asp-controller="Products" asp-action="Index" method="get">
+            <div class="form-group row">
+
+                <!-- input field, has the name id which is passed to the parameter-->
+                <input type="text" name="id" placeholder="Search..." class="input-group-text">
+                <!-- button to submit the filter -->
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Go!
+                </button>
+            </div>
+        </form><!-- end search form-->
+        <table class="table table-striped border">
+            <tr class="table-info">
+                <th>
+                    Product Name
+                </th>
+                <th>
+                    Price
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Weight
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Shop Stock
+                </th>
+                <th>
+                    Warehouse Stock
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+            @*for each loop to go thorugh the model passed to the view*@
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @*html helper, displays product name*@
+                        @Html.DisplayFor(m => item.FkProduct.ProductName)
+                    </td>
+                    <td>
+                        @*product price *@
+                        @String.Format("{0:c}", item.FkProduct.ProductPrice)
+                    </td>
+                    <td>
+                        @*Product description*@
+                        @Html.DisplayFor(m => item.FkProduct.ProductDescription)
+                    </td>
+                    <td>
+                        @*heml helper, displays product weight*@
+                        @Html.DisplayFor(m => item.FkProduct.ProductWeight)
+                    </td>
+
+                    <td>
+                        @*html helper, displays category name*@
+                        @Html.DisplayFor(m => item.FkProduct.FkCategory.CategoryName)
+                    </td>
+                    <td>@* html helper, displays shop stock*@
+                        @Html.DisplayFor(m => item.StockShop)
+                    </td>
+                    <td>
+                        @*html helper, displays stock wearhouse*@
+                        @Html.DisplayFor(m => item.StockWarehouse)
+                    </td>
+                    <td>
+                        <partial name="_TableButtonPartial1" model="item.FkProduct.ProductId" />
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

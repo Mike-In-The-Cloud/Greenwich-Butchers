@@ -1,0 +1,305 @@
+﻿@model GreButchersEFCore_V2.Models.ViewModels.BulkOrderViewModel
+@using GreButchersEFCore_V2.Utility
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    string StatusValue = "";
+}
+
+
+
+<br />
+<div class="border backgroundWhite">
+    <h2 class="text-info">Details For Order ID: <input asp-for="BulkOrder.BulkOrderId" disabled class="text-info" style="border:none;border-color: transparent; background:none" /></h2>
+    <br />
+    <div class="form-group row">
+        <div class="col-3">
+            Creation Date: @ViewBag.CreationDate
+        </div>
+        <div class="col2">
+            <label asp-for="BulkOrder.BulkOrderStatus"></label>
+        </div>
+        <div class="col-2">
+
+            @*<input asp-for="FirstOrDefault().FkBulkOrder.BulkOrderStatus" disabled class="form-control" style="background:none" />*@
+            @{ if (ViewBag.Status == 0)
+                {
+                    StatusValue = StaticDetails.OrderStatusPending;
+                    <label class="text-secondary"><i class="fas fa-cogs"></i> @StatusValue  </label>
+                }
+                else if (ViewBag.Status == 1)
+                {
+                    StatusValue = StaticDetails.OrderStatusInProgress;
+                    <label class="text-warning"><i class="fas fa-tasks"></i> @StatusValue</label>
+                }
+                else if (ViewBag.Status == 2)
+                {
+                    StatusValue = StaticDetails.OrderStatusComplete;
+                    <label class="text-success"><i class="fas fa-check-circle"></i> @StatusValue</label>
+                }
+                else if (ViewBag.Status == 3)
+                {
+                    StatusValue = StaticDetails.OrderStatusRejected;
+                    <label class="text-danger"><i class="fas fa-times-circle"></i> @StatusValue</label>
+                }
+                else
+                {
+                    StatusValue = StaticDetails.OrderStatusError;
+                    <label class="text-danger"><i class="fas fa-check-circle"></i> @StatusValue</label>
+                }
+            }
+        </div>
+        <div class="col-2">
+            Item Count: @ViewBag.ItemCount
+        </div>
+        <div class="col-2">
+            Total Weight: @ViewBag.TotalWeight (Kg)
+        </div>
+    </div>
+
+
+
+    @*details of the customer that placed the order
+        can only be accessed by admins*@
+    @if (User.IsInRole(StaticDetails.AdminUser) || User.IsInRole(StaticDetails.SuperAdminUser))
+    {
+
+        <div class="p-4 border rounded">
+            <h4 class="text-info">Customer Details</h4>
+
+            <div class="form-group row">
+
+                <div class="col-2 ">
+                    <label>Customer Name:</label>
+                </div>
+
+                <div class="col-3">
+                    <input disabled class="form-control" value="@ViewBag.Fullname" />
+                </div>
+                <div class="col-2">
+                    <label asp-for="ApplicationUser.DOB"></label>
+                </div>
+                <div class="col-3">
+                    <input asp-for="ApplicationUser.DOB" disabled class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label asp-for="Customer.CustomerCompanyName"></label>
+                </div>
+                <div class="col-3">
+                    <input asp-for="Customer.CustomerCompanyName" disabled class="form-control" />
+                </div>
+
+
+
+
+                <div class="col-2">
+                    <label asp-for="ApplicationUser.PhoneNumber"></label>
+                </div>
+                <div class="col-3">
+                    <input asp-for="ApplicationUser.PhoneNumber" disabled class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-2 ">
+                    <label asp-for="ApplicationUser.Email"></label>
+                </div>
+
+                <div class="col-3">
+                    <input asp-for="ApplicationUser.Email" disabled class="form-control" />
+                </div>
+
+
+
+
+                <div class="col-2">
+                    <label asp-for="ApplicationUser.BuildingName"></label>
+                </div>
+                <div class="col-3">
+                    <input asp-for="ApplicationUser.BuildingName" disabled class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-2 ">
+                    <label asp-for="ApplicationUser.StreetAddress1"></label>
+                </div>
+
+                <div class="col-3">
+                    <input asp-for="ApplicationUser.StreetAddress1" disabled class="form-control" />
+                </div>
+
+
+
+                <div class="col-2">
+                    <label asp-for="ApplicationUser.StreetAddress2"></label>
+                </div>
+                <div class="col-3">
+                    <input asp-for="ApplicationUser.StreetAddress2" disabled class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-2 ">
+                    <label asp-for="ApplicationUser.City"></label>
+                </div>
+
+                <div class="col-3">
+                    <input asp-for="ApplicationUser.City" disabled class="form-control" />
+                </div>
+
+
+
+                <div class="col-2">
+                    <label asp-for="ApplicationUser.PostCode"></label>
+                </div>
+                <div class="col-3">
+                    <input asp-for="ApplicationUser.PostCode" disabled class="form-control" />
+                </div>
+
+            </div>
+
+
+        </div>
+
+    }
+
+
+    <br />
+
+
+    @*table containing the order items accessed by admins and customers*@
+
+    <h4 class="text-info">Item Details</h4>
+    <div class="form-group row col-12">
+
+        <table class="table table-striped border">
+            <tr class="table-info">
+                <th>
+                    Image
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Weight (Kg)
+                </th>
+                <th>
+                    Quantity
+                </th>
+            </tr>
+            @foreach (var item in Model.BulkOrderItem)
+            {
+                <tr>
+                    <td>
+                        <img src="@item.FkProduct.ProductImage" style="width:100px; margin:auto; display:block; border-radius:5px; border:1px solid #bbb9b9;" />
+                    </td>
+                    <td>
+                        @item.FkProduct.FkCategory.CategoryName
+                    </td>
+                    <td>
+                        @item.FkProduct.ProductName
+                    </td>
+                    <td>
+                        @item.FkProduct.ProductWeight
+                    </td>
+                    <td>
+                        @item.BulkOrderItemQuantity
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <br />
+    @{if (Model.BulkOrder.BulkOrderStatus == 2)
+        {
+            <hr />
+            <br />
+            <h4 class="text-info">View Invoice</h4>
+            <br />
+
+            <div class="form-group row col-12">
+
+                @foreach (var item in Model.SupplierContactedList)
+                {
+                    if (item.SupplierContactedUserSelected == true)
+                    {
+                        @Html.ActionLink("Select", "Index", "Invoice", new { id = item.SupplierContactedId }, new { @class = "btn btn-lg btn-success" })
+
+                    }
+                }
+            </div>
+            @* nested if statment that loops though the supplier quotes *@
+            {
+                if (Model.SupplierContactedList.Count != 0)
+                {
+                    @* nested if statement that test the value of supplier quote selected *@
+
+
+                }
+            }
+        }
+        else
+        {
+            int Counter = 1;
+            <hr />
+            <br />
+            <h4 class="text-info">Quote Details</h4>
+            <br />
+            <div class="form-group row col-12">
+                <table class="table table-striped border">
+                    <tr class="table-info">
+                        <th>
+                            Quote Number
+                        </th>
+                        <th>
+                            Quote ID
+                        </th>
+                        <th>
+                            Price
+                        </th>
+                        <th>
+                            Date Received
+                        </th>
+                        <th>
+                            Select Quote
+                        </th>
+                    </tr>
+                    @foreach (var item in Model.SupplierContactedList)
+                    {
+                        if (item.SupplierContactedDisplayToUser == true)
+                        {
+                            <tr>
+                                <td>
+                                    @Counter
+                                </td>
+                                <td>
+                                    @item.SupplierContactedId
+                                </td>
+                                <td>
+                                    @{decimal Quote = Convert.ToDecimal(item.SupplierContactedQuote) * Convert.ToDecimal(item.FkBulkOrder.BulkOrderMargin);}
+                                    £@Quote.ToString("0.00")
+                                </td>
+                                <td>
+                                    @item.SupplerContactedReplyDate
+                                </td>
+                                <td>
+
+                                    @Html.ActionLink("Select", "Index", "Invoice", new { id = item.SupplierContactedId }, new { @class = "btn btn-lg btn-success" })
+                                </td>
+                            </tr>
+                            Counter++;
+                        }
+                    }
+                </table>
+            </div>
+        }
+    }
+</div>
+
+

@@ -1,0 +1,153 @@
+﻿@model GreButchersEFCore_V2.Models.ViewModels.InvoiceViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<div class="border backgroundWhite">
+    <h2 class="text-info">Invoice For Order: @Model.BulkOrder.BulkOrderId</h2>
+    <div class="p-4 border rounded">
+        <div class="row text-right">
+            <div class=" col-12">
+                <div class="float-left">
+                    <img src="~/Images/GreButchersLogo.jpg" />
+                </div>
+                <div class="font-weight-bold text-right">
+                    From
+                </div>
+                <div class="font-weight-light text-right">
+                    Greenwich Butchers
+                </div>
+                <div class="font-weight-light text-right">
+                    22 Royal Hill
+                </div>
+                <div class="font-weight-light text-right">
+                    Greenwich
+                </div>
+                <div class="font-weight-light text-right">
+                    London
+                </div>
+                <div class="font-weight-light text-right">
+                    Se10 8RT
+                </div>
+                <div class="font-weight-light text-right">
+                    @Model.BulkOrder.BulkOrderCompletionDate
+                </div>
+
+            </div>
+        </div>
+
+        <div class="text-left text-uppercase">
+            <div class="text-muted font-weight-bold ">
+                To
+            </div>
+            <div class="font-weight-light">
+                @Model.Customer.CustomerCompanyName
+            </div>
+            <div class="font-weight-light">
+                @Model.Customer.ApplicationUser.BuildingName
+            </div>
+            <div class="font-weight-light">
+                @Model.Customer.ApplicationUser.StreetAddress1
+            </div>
+            <div class="font-weight-light">
+                @Model.Customer.ApplicationUser.StreetAddress2
+            </div>
+            <div class="font-weight-light">
+                @Model.Customer.ApplicationUser.City
+            </div>
+            <div class="font-weight-light">
+                @Model.Customer.ApplicationUser.PostCode
+            </div>
+        </div>
+        <br />
+
+        <table class="table table-striped my-table table-bordered">
+            <tr class="table-info">
+                <th>
+                    Product Name
+                </th>
+                <th>
+                    Quantity
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Weight(kg)
+                </th>
+
+                <th>
+
+                </th>
+            </tr>
+            @{ decimal TotalWeight = 0;}
+            @{ foreach (var item in Model.BulkOrderItem)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(c => item.FkProduct.ProductName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(c => item.BulkOrderItemQuantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(c => item.FkProduct.FkCategory.CategoryName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(c => item.FkProduct.ProductWeight)
+                            @{TotalWeight += item.FkProduct.ProductWeight;}
+                        </td>
+                        <td></td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td>
+                    @*empty**@
+                </td>
+                <td>
+                    @*empty**@
+                </td>
+                <td>
+                    @*empty**@
+                </td>
+                <td class="font-weight-bold text-right">
+                    Total Weight (Kg)
+                </td>
+
+                <td class="font-weight-bold text-right">
+                    Total Inc VAT
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @*empty**@
+                </td>
+                <td>
+                    @*empty**@
+                </td>
+                <td>
+                    @*empty**@
+                </td>
+                <td class="text-right">
+                    @TotalWeight
+                </td>
+
+                <td class="text-right">
+                    @{decimal Total = Convert.ToDecimal(Model.SupplierContacted.SupplierContactedQuote) * Convert.ToDecimal(Model.BulkOrder.BulkOrderMargin);}
+                    £ @Total.ToString("#.##")
+                </td>
+            </tr>
+        </table>
+        <div class="text-right">
+            @{DateTime DueDate = Convert.ToDateTime(Model.BulkOrder.BulkOrderCompletionDate);
+                }
+            Due Date : @DueDate.AddDays(5).ToString("dd/MM/yyyy")
+        </div>
+        <div class="text-right">
+
+        </div>
+    </div>
+</div>

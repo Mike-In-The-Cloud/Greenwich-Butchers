@@ -1,0 +1,204 @@
+﻿@page
+@using GreButchersEFCore_V2.Utility
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<br />
+<div class="border backgroundWhite">
+    <h2 class="text-info">Create New Account</h2>
+    <br />
+    @*This razor page uses the model RegisterModel to display the page
+        it is linked to ASP.NET Identity with the extended class*@
+
+
+    <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <div class="border backgroundwhite container">
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            @*Input email*@
+            <div class="form-group row">
+                <div class="col-2">
+                    @Html.LabelFor(m => m.Input.Email)
+                </div>
+                <div class="col-5">
+                    <input asp-for="Input.Email" class="form-control" />
+                </div>
+                @*Validation*@
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            @*password*@
+            <div class="form-group row">
+                <div class="col-2">
+                    @Html.LabelFor(m => m.Input.Password)
+                </div>
+                <div class="col-5">
+                    <input asp-for="Input.Password" class="form-control" />
+                </div>
+                @*Validation*@
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            @*password confirmation*@
+            <div class="form-group row">
+                <div class="col-2">
+                    @Html.LabelFor(m => m.Input.ConfirmPassword)
+                </div>
+                <div class="col-5">
+                    <input asp-for="Input.ConfirmPassword" class="form-control" />
+                </div>
+                @*Validation*@
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    @Html.LabelFor(m => m.Input.CompnayName)
+                </div>
+                <div class="col-5">
+                    <input asp-for="Input.CompnayName" class="form-control" />
+                </div>
+                @*Validation*@
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            @**user first name*@
+            <div class="form-group row">
+                <div class="col-2">
+                    @Html.LabelFor(m => m.Input.FirstName)
+                </div>
+                <div class="col-5">
+                    <input asp-for="Input.FirstName" class="form-control" />
+                </div>
+                @*Validation*@
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            @*user surname*@
+            <div class="form-group row">
+                <div class="col-2">
+                    @Html.LabelFor(m => m.Input.Surname)
+                </div>
+                <div class="col-5">
+                    <input asp-for="Input.Surname" class="form-control" />
+                </div>
+                @*Validation*@
+                <span asp-validation-for="Input.Surname" class="text-danger"></span>
+            </div>
+            @*user date of birth*@
+            <div class="form-group row">
+                <div class="col-2">
+                    @Html.LabelFor(m => m.Input.DOB)
+                </div>
+                <div class="col-5">
+                    <input asp-for="Input.DOB" class="form-control" />
+                </div>
+                @*Validation*@
+                <span asp-validation-for="Input.DOB" class="text-danger"></span>
+            </div>
+            @*user address building name*@
+            <div class="form-group row">
+                <div class="col-2">
+                    @Html.LabelFor(m => m.Input.BuildingName)
+                </div>
+                <div class="col-5">
+                    <input asp-for="Input.BuildingName" class="form-control" />
+                </div>
+                <span asp-validation-for="Input.BuildingName" class="text-danger"></span>
+            </div>
+            @*User address line 1*@
+            <div class="form-group row">
+                <div class="col-2">
+                    @Html.LabelFor(m => m.Input.AddressLine1)
+                </div>
+                <div class="col-5">
+                    <input asp-for="Input.AddressLine1" class="form-control" />
+                </div>
+                <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
+            </div>
+            @*User address line 2*@
+            <div class="form-group row">
+                <div class="col-2">
+                    @Html.LabelFor(m => m.Input.AddressLine2)
+                </div>
+                <div class="col-5">
+                    <input asp-for="Input.AddressLine2" class="form-control" />
+                </div>
+                <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
+            </div>
+            @*user city*@
+            <div class="form-group row">
+                <div class="col-2">
+                    @Html.LabelFor(m => m.Input.City)
+                </div>
+                <div class="col-5">
+                    <input asp-for="Input.City" class="form-control" />
+                </div>
+                <span asp-validation-for="Input.City" class="text-danger"></span>
+            </div>
+            @*user postcode*@
+            <div class="form-group row">
+                <div class="col-2">
+                    @Html.LabelFor(m => m.Input.Postcode)
+                </div>
+                <div class="col-5">
+                    <input asp-for="Input.Postcode" class="form-control" />
+                </div>
+                <span asp-validation-for="Input.Postcode" class="text-danger"></span>
+            </div>
+            @*user contact number*@
+            <div class="form-group row">
+                <div class="col-2">
+                    @Html.LabelFor(m => m.Input.PhoneNumber)
+                </div>
+                <div class="col-5">
+                    <input asp-for="Input.PhoneNumber" class="form-control" />
+                </div>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+
+
+            @*Check to see if the user is logged in as a super admin
+        if the user is a super admin, the following if statement will display
+        this will stop a unauthorized user creating a super admin or an admin *@
+
+            @if (User.IsInRole(StaticDetails.SuperAdminUser))
+            {
+                <div class="form-group row">
+                    <div class="col-2">
+                    </div>
+                    <div class="col-5">
+                        @*admin role*@
+                        <input type="radio" name="rdEmpType" value="@StaticDetails.EmpPt"  /> @StaticDetails.EmpPt
+                        @*super admin role*@
+                        <input type="radio" name="rdEmpType" value="@StaticDetails.EmpFt"  /> @StaticDetails.EmpFt
+                    </div>
+                </div>
+                @*radio buttons to assign the role to the user*@
+                <div class="form-group row">
+                    <div class="col-2">
+                    </div>
+                    <div class="col-5">
+                        @*customer role*@
+                        <input type="radio" name="rdUserRole" value="@StaticDetails.CustomerUser"  /> @StaticDetails.CustomerUser
+                        @*admin role*@
+                        <input type="radio" name="rdUserRole" value="@StaticDetails.AdminUser"  /> @StaticDetails.AdminUser
+                        @*super admin role*@
+                        <input type="radio" name="rdUserRole" value="@StaticDetails.SuperAdminUser" /> @StaticDetails.SuperAdminUser
+                    </div>
+                </div>
+            }
+            @*Submit button*@
+            <div class="form-group row">
+                <div class="col-5 offset-2">
+                    <button type="submit" class="btn btn-primary form-control">Register</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+    @*validation scripts taken from the model used in the page*@
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }

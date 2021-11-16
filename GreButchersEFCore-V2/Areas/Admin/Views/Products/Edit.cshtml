@@ -1,0 +1,113 @@
+﻿@model GreButchersEFCore_V2.Models.ViewModels.ProductsViewModel
+
+@using GreButchersEFCore_V2.Extensions
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<br />
+<div class="border backgroundWhite">
+    <h2 class="text-info">Edit Product</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        <div class="p-4 border rounded row">
+            <!--hidden property to store the id of the product-->
+            <input hidden asp-for="Stocks.FkProduct.FkCategory.CategoryId" />
+            <!--asp.net validation-->
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-8">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Stocks.FkProduct.ProductName"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Stocks.FkProduct.ProductName" class="form-control" />
+                    </div>
+                    <span asp-validation-for="Stocks.FkProduct.ProductName" class="text-danger"></span>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Stocks.FkProduct.ProductPrice"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Stocks.FkProduct.ProductPrice" class="form-control" />
+                    </div>
+                    <span asp-validation-for="Stocks.FkProduct.ProductPrice" class="text-danger"></span>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Stocks.FkProduct.ProductWeight"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Stocks.FkProduct.ProductWeight" class="form-control" />
+                    </div>
+                    <span asp-validation-for="Stocks.FkProduct.ProductWeight" class="text-danger"></span>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Stocks.FkProduct.ProductImage"></label>
+                    </div>
+                    <div class="col-8">
+                        <input type="file" name="file" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Categories"></label>
+                    </div>
+                    <div class="col-8">
+                        <!-- using the extension method i have created the drop down menu from the data in the database-->
+                        <select asp-for="@Model.Stocks.FkProduct.FkCategoryId"
+                                asp-items="Model.Categories.ToSelectListItem(Model.Stocks.FkProduct.FkCategory.CategoryId)"
+                                class="form-control"></select>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Stocks.FkProduct.ProductDescription"></label>
+                    </div>
+                    <div class="col-8">
+                        <textarea asp-for="Stocks.FkProduct.ProductDescription" class="form-control"></textarea>
+                    </div>
+                    <span asp-validation-for="Stocks.FkProduct.ProductDescription" class="text-danger"></span>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Stocks.StockShop"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Stocks.StockShop" class="form-control" />
+                    </div>
+                    <span asp-validation-for="Stocks.StockShop" class="text-danger"></span>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Stocks.StockWarehouse"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Stocks.StockWarehouse" class="form-control" />
+                    </div>
+                    <span asp-validation-for="Stocks.StockWarehouse" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-1">
+                <!-- spacer-->
+            </div>
+            <!-- iamge display-->
+            <div class="col-3">
+                <img src="@Model.Stocks.FkProduct.ProductImage" style="border-radius:5px; border:1px solid #bbb9b9;  width: 250px; height: 250px;" />
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Update" />
+                <a asp-action="Index" class="btn btn-success">Back to List</a>
+            </div>
+        </div>
+    </form>
+</div>
+    @section Scripts{
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+

@@ -1,0 +1,98 @@
+﻿
+@model GreButchersEFCore_V2.Models.ViewModels.ProductsViewModel
+@using GreButchersEFCore_V2.Extensions
+
+
+<br />
+<div class="border backgroundWhite">
+    <h2 class="text-info">Delete Product</h2>
+
+    <form method="post">
+        <div class="p-4 border rounded row">
+            <!--hidden property to store the id of the product-->
+            <input hidden asp-for="Products.ProductId" />
+
+            <div class="col-8">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Products.ProductName"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Products.ProductName" readonly class="form-control" />
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Products.ProductPrice"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Products.ProductPrice" readonly class="form-control" />
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Products.ProductWeight"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Products.ProductWeight" readonly class="form-control" />
+                    </div>
+
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Categories"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Products.FkCategory.CategoryName" readonly class="form-control" />
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Products.ProductDescription"></label>
+                    </div>
+                    <div class="col-8">
+                        <textarea asp-for="Products.ProductDescription" readonly class="form-control"></textarea>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Stocks.StockShop"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Stocks.StockShop" class="form-control" readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Stocks.StockWarehouse"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Stocks.StockWarehouse" class="form-control" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-1">
+                <!-- spacer-->
+            </div>
+            <!-- iamge display-->
+            <div class="col-3">
+                <img src="@Model.Products.ProductImage" style="border-radius:5px; border:1px solid #bbb9b9;  width: 250px; height: 250px;" />
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" class="btn btn-danger" value="Delete" />
+                <a asp-action="Index" class="btn btn-success">Back to List</a>
+            </div>
+        </div>
+    </form>
+</div>
+    @section Scripts{
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+

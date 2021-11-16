@@ -1,0 +1,111 @@
+﻿@model GreButchersEFCore_V2.Models.ViewModels.ShoppingCartViewModel
+@using GreButchersEFCore_V2.Utility
+@{
+    ViewData["Title"] = "Index";
+}
+@{int i = 0; }
+
+<br /> <br />
+<div class="border backgroundWhite">
+    <form asp-action="Submit" asp-controller="ShoppingCart" method="post">
+
+        <h2 class="text-info">Your Shopping Cart</h2>
+        <br />
+        @*if the model product count is greater then zero*@
+        @if (Model.Products.Count > 0)
+        {
+            @* container for the page content*@
+            <div class="container border border-secondary rounded" style="padding:15px;">
+                @*new row*@
+                <div class="row">
+                    @* creates a virtical line that seperates the products from the right
+                        of the page*@
+                    <div class="col-8" style="border-right:1px solid #bbb9b9;">
+                        @* new table to display the current shopping cart items*@
+                        <table class="table table-striped my-table">
+                            @*table header*@
+                            <tr class="table-info">
+                                @*This first header is left blank for astetics*@
+                                <th style="text-align:center; width:20%"></th>
+                                @*header for product name*@
+                                <th style="text-align:center;">
+                                    <label asp-for="@Model.Products.FirstOrDefault().ProductName"></label>
+                                </th>
+                                @*header for product weight*@
+                                <th style="text-align:center;">
+                                    <label asp-for="@Model.Products.FirstOrDefault().ProductWeight"></label>
+                                </th>
+                                @*header for category name*@
+                                <th style="text-align:center;">
+                                    <label asp-for="@Model.Products.FirstOrDefault().FkCategory.CategoryName"></label>
+                                </th>
+                                <th style="text-align:center;">
+                                    @*header for quanitity needed*@
+                                    <label asp-for="@Model.BulkOrderItems.BulkOrderItemQuantity"></label>
+                                </th>
+                                <th></th>
+                            </tr>
+                            @*for each loop that itterates though the model to display the corrisponding rows*@
+                            @foreach (var item in Model.Products)
+                            {
+
+                                <tr style="padding:50px">
+                                    <td>
+                                        @*this makes the image clickable and will take the user to the details page for the product*@
+                                        <a asp-area="Customer" asp-controller="Home" asp-action="Details" asp-route-id="@item.ProductId">
+                                            <img src="@item.ProductImage" width="100%" style="margin:auto; display:block; border-radius:5px; border:1px solid #bbb9b9;" />
+                                        </a>
+                                    </td>
+                                    <td style="text-align:center">
+                                        @Html.DisplayFor(c => item.ProductName)
+                                    </td>
+                                    <td style="text-align:center">
+                                        @Html.DisplayFor(c => item.ProductWeight)
+                                    </td>
+                                    <td style="text-align:center">
+                                        @Html.DisplayFor(c => item.FkCategory.CategoryName)
+                                    </td>
+                                    <td style="text-align:center">
+
+                                        <input asp-for="@Model.OrderItems[i].BulkOrderItemQuantity" style="width:65px" value="10" />
+                                        @{i++;}
+                                        <span asp-validation-for="BulkOrderItems.BulkOrderItemQuantity" class="text-danger"></span>
+                                    </td>
+                                    @*button to delete any item from the cart*@
+                                    <td>
+
+                                        <button type="submit" class="btn btn-danger" asp-action="remove" asp-route-id="@item.ProductId">
+                                            @*using font awsomes bootstrap trashcan image*@
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                    @**Submit if user is logged in or show login link*@
+                    <div class="row" style="padding-left:40px">
+                        <div>
+                            @if (User.IsInRole(StaticDetails.CustomerUser))
+                            {
+                                
+                                <button type="submit" class="btn btn-primary" asp-action="Submit" >Confirm Order</button>
+                            }
+                            else
+                            {
+                                <partial name="~/Views/Shared/_LoginPartial.cshtml" />
+                            }
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+    </form>
+</div>
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

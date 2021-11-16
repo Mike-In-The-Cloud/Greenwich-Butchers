@@ -1,0 +1,229 @@
+﻿@using Microsoft.AspNetCore.Http
+@using GreButchersEFCore_V2.Extensions
+@using GreButchersEFCore_V2.Utility
+
+
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Greenwich Butchers</title>
+
+    <environment include="Development">
+        @*css for bootstrap, used in the layout for the site*@
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        @*css for the dat picker *@
+        <link rel="stylesheet" href="~/css/jquery-ui.css" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
+              crossorigin="anonymous"
+              integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" />
+        @*css for the dat picker *@
+        <link rel="stylesheet" href="~/css/jquery-ui.css" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    </environment>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body class="search-background">
+    @*This container sets the width of the entire site*@
+
+    <header>
+        <br />
+        <center>
+            <a asp-area="Customer" asp-controller="Home" asp-action="Index">
+                <img src="~/Images/GreButchersLogo.jpg" title="Greenwich Butchers" alt="Greenwich Butchers Logo" />
+            </a>
+        </center>
+        <br />
+        <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav  mr-auto">
+                    <li>
+                        <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Products">The Meat</a>
+                    </li>
+                    @**If statment test is role for admin user or super admin user is applied
+                only admins and super admins will see this drop down menu*@
+                    @if (User.IsInRole(StaticDetails.AdminUser) || User.IsInRole(StaticDetails.SuperAdminUser))
+                    {
+                        @*start the drop down menu for category and product management*@
+                        <li class="nav-item dropdown">
+
+                            @*sets the drop down menu up, has a href of # as i do not want this button to navigate anywhere, only to show the items within*@
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownProducts" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Product Management
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropDownProducts">
+
+
+                                @** Only super admins can access the categories section of the website as
+                            i do not want any memeber of staff being able to create, add, edit or delete the
+                            categories*@
+                                @if (User.IsInRole(StaticDetails.SuperAdminUser))
+                                {
+                                    @*drop down link to the category management page*@
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="Category" asp-action="Index">Categories</a>
+                                }
+
+
+                                @*dropdown link to the products page*@
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Products" asp-action="Index">Product</a>
+                            </div>
+                        </li>
+                        @*end of drop down for product management*@
+                    }
+
+                    @**This if statement is an authoriztion for super users only
+                the user must be logged into the system as a super admin to access this drop down*@
+                    @if (User.IsInRole(StaticDetails.SuperAdminUser))
+                    {
+                        @*start drop down for user management*@
+                        <li class="nav-item dropdown">
+                            @*sets the drop down menu up, has a href of # as i do not want this button to navigate anywhere, only to show the items within*@
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownUsers" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                User Management
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropDownProducts">
+                                @*drop down link to the category management page*@
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="User" asp-action="Index">User List</a>
+
+                            </div>
+                        </li>
+                        @*end drop down for user management*@
+                    }
+
+                    @*start if statement to check if the user is a admin or super admin, to access the supplier page*@
+                    @if (User.IsInRole(StaticDetails.AdminUser) || User.IsInRole(StaticDetails.SuperAdminUser))
+                    {
+                        <li>
+                            <a class="nav-link text-light" asp-area="Admin" asp-controller="Supplier" asp-action="Index">Suppliers</a>
+                        </li>
+                    }
+
+                    @*start the customer shopping cart *@
+                    <!-- http context accessor to get the session -->
+                    @if (HttpContextAccessor.HttpContext.Session.Get<List<int>>("ssShoppingCart") != null)
+                    {
+                        <li style="color:wheat">
+                            <a asp-area="Customer" asp-controller="ShoppingCart" asp-action="Index" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i>&nbsp;
+                                @{
+                                    // retrives the number of items in the shopping cart
+                                    var count = HttpContextAccessor.HttpContext.Session.Get<List<int>>("ssShoppingCart").Count;
+                                }
+                                <!-- displays the count variable-->
+                                (@count)
+                            </a>
+                        </li>
+                    }
+                    else
+                    {<!-- if the shopping cart has no items display a zero-->
+                        <li style="color:wheat">
+                            <a asp-area="Customer" asp-controller="ShoppingCart" asp-action="Index" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i>&nbsp;
+
+                                (0)
+                            </a>
+                        </li>
+                    }
+
+                    @*Order history navigation link*@
+                    @if (User.IsInRole(StaticDetails.CustomerUser) || User.IsInRole(StaticDetails.AdminUser) || User.IsInRole(StaticDetails.SuperAdminUser))
+                    {
+                        <li>
+                            <a class="nav-link" asp-area="OrderHistory" asp-controller="BulkOrder" asp-action="Index">Order History</a>
+                        </li>
+                    }
+                    @*start if statement to check if the user is logged in
+                for the account management*@
+                    @if (User.IsInRole(StaticDetails.CustomerUser) || User.IsInRole(StaticDetails.AdminUser) || User.IsInRole(StaticDetails.SuperAdminUser))
+                    {
+                        <li class="nav-item dropdown">
+                            @*sets the drop down menu up, has a href of # as i do not want this button to navigate anywhere, only to show the items within*@
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownUsers" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Account Management
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropDownAccount">
+                                @*drop down link to the account management index page*@
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">Details</a>
+
+                                @*drop down link to the account password management page*@
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/ChangePassword">Change Password</a>
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/EnableAuthenticator">Enable Authenticator</a>
+
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Disable2fa">Disable Authenticator</a>
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/ResetAuthenticator">Reset Authenticator</a>
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/TwoFactorAuthentication">Authenticator</a>
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/GenerateRecoveryCodes">Generate Recovery Codes</a>
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/ExternalLogins">External Logins</a>
+                                <a 
+                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/DeletePersonalData">Delete Personal Data</a>
+                            </div>
+                        </li>
+                    }
+                    @*End of customer shopping cart*@
+                </ul>
+
+            </div>
+            <div>
+                <partial name="_LoginPartial" />
+            </div>
+        </nav>
+
+    </header>
+    <div class="container">
+        <partial name="_CookieConsentPartial" />
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted bg-dark">
+        <div class="container">
+            &copy; 2019 - Greenwich Butchers - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+        @*jQuery script used to make the date picker drop down*@
+        <script src="~/js/jquery-ui.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha256-E/V4cWE4qvAeO5MOhjtGtqDzPndRO1LBk8lJ/PR7CA4=">
+        </script>
+        @*jQuery script used to make the date picker drop down*@
+        <script src="~/js/jquery-ui.js"></script>
+    </environment>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

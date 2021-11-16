@@ -1,0 +1,94 @@
+﻿
+@model GreButchersEFCore_V2.Models.Stock
+@using GreButchersEFCore_V2.Extensions
+
+
+<br />
+<div class="border backgroundWhite">
+    <h2 class="text-info">Product Details</h2>
+
+
+    <div class="p-4 border rounded row">
+
+        <!--asp.net validation-->
+
+        <div class="col-8">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="FkProduct.ProductName"></label>
+                </div>
+                <div class="col-8">
+                    <input readonly asp-for="FkProduct.ProductName" class="form-control" />
+                </div>
+
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="FkProduct.ProductPrice"></label>
+                </div>
+                <div class="col-8">
+                    <input readonly asp-for="FkProduct.ProductPrice" class="form-control" />
+                </div>
+
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="FkProduct.ProductWeight"></label>
+                </div>
+                <div class="col-8">
+                    <input readonly asp-for="FkProduct.ProductWeight" class="form-control" />
+                </div>
+
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="FkProduct.FkCategory"></label>
+                </div>
+                <div class="col-8">
+                    <input readonly asp-for="FkProduct.FkCategory.CategoryName" class="form-control" />
+                </div>
+
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="FkProduct.ProductDescription"></label>
+                </div>
+                <div class="col-8">
+                    <textarea asp-for="FkProduct.ProductDescription" readonly class="form-control"></textarea>
+                </div>
+
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="StockShop"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="StockShop" readonly class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="StockWarehouse"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="StockWarehouse" readonly class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-1">
+            <!-- spacer-->
+        </div>
+        <!-- iamge display-->
+        <div class="col-3">
+            <img src="@Model.FkProduct.ProductImage" style="border-radius:5px; border:1px solid #bbb9b9;  width: 250px; height: 250px;" />
+        </div>
+        <br />
+        <div class="form-group">
+            <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.FkProduct.ProductId">Edit Product</a>
+            <a asp-action="Index" class="btn btn-success">Back to List</a>
+        </div>
+    </div>
+</div>
+

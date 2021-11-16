@@ -1,0 +1,403 @@
+﻿@model GreButchersEFCore_V2.Models.ViewModels.BulkOrderViewModel
+@using GreButchersEFCore_V2.Extensions
+@using GreButchersEFCore_V2.Utility
+
+
+
+@{
+    ViewData["Title"] = "Edit";
+
+}
+
+
+<br />
+
+<div class="border backgroundWhite">
+
+    <h2 class="text-info">Contact Suppliers</h2>
+
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <form method="post" enctype="multipart/form-data">
+
+        <div class="p-4 border rounded">
+
+            <div class="row">
+
+                <!-- content left of page-->
+                <div class="col-8 border-right">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#ModalPopup">
+                        View all Suppliers Contact Details
+                    </button>
+                    <br />
+                    <br />
+                    <div class="form-group row">
+
+                        <div class="col-4">
+
+                            Please select the supplier you have contacted.
+
+                        </div>
+                        <div class="col-4">
+                            <!--Drop down list to select which supplier has been contacted
+                                using the extension method i have created the drop down menu from the data in the database
+                            This calls the class IEnumerableExtensions class from the Extensions folder to create a drop down
+                            menu from the model in the data layer-->
+                            <select asp-for="@Model.SupplierContacted.FkSupplerId"
+                                    asp-items="Model.SupplierList.ToSelectListItem2(Model.SupplierContacted.FkSupplerId)"
+                                    class="form-control"></select>
+                        </div>
+
+                    </div><!-- end drop down for suppliers-->
+                    <!-- Suppler Contacted date-->
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="SupplierContacted.SupplierContactedDate"></label>
+                        </div>
+                        <div class="col-4">
+                            <input asp-for="@Model.SupplierContacted.SupplierContactedDate" value="@DateTime.Now.ToString("dd-MM-yyyy")" disabled class="form-control" />
+                            <span asp-validation-for="SupplierContacted.SupplierContactedDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <!-- Status of the bulk order-->
+                        <div class="col-4">
+                            <label asp-for="@Model.BulkOrder.BulkOrderStatus"></label>
+                            <!-- using an if statement to check the value of the order status, will dynamically generate the code
+                            that will display the current order status to the user-->
+                            <input asp-for="BulkOrder.BulkOrderStatus" class="form-control" hidden />
+                            <div class="btn-group btn-group-toggle col-3" data-toggle="buttons">
+
+                                <!-- status pending shows all radio buttons, has "In Progress" selected by default if the user forgets to select this option -->
+                                @{if (ViewBag.OrderStatus == 0)
+                                    {
+                                        <label class="btn btn-outline-secondary active">
+                                            <input asp-for="BulkOrder.BulkOrderStatus" type="radio" id="1" name="OrderStatus" value="@StaticDetails.OrderStatusZero" class="form-control" />@StaticDetails.OrderStatusPending
+                                        </label>
+                                        <label class="btn btn-outline-warning">
+                                            <input asp-for="BulkOrder.BulkOrderStatus" type="radio" id="2" name="OrderStatus" value="@StaticDetails.OrderStatusOne" checked="checked" class="form-control" /> @StaticDetails.OrderStatusInProgress
+                                        </label>
+
+                                        <label class="btn btn-outline-success">
+                                            <input asp-for="BulkOrder.BulkOrderStatus" type="radio" id="3" name="OrderStatus" value="@StaticDetails.OrderStatusTwo" autocomplete="off" class="form-control"> @StaticDetails.OrderStatusComplete
+                                        </label>
+
+                                        <label class="btn btn-outline-danger">
+                                            <input asp-for="BulkOrder.BulkOrderStatus" type="radio" id="4" name="OrderStatus" value="@StaticDetails.OrderStatusThree" autocomplete="off" class="form-control"> @StaticDetails.OrderStatusRejected
+                                        </label>
+                                    }
+                                    @*Status in progress*@
+                                    else if (ViewBag.OrderStatus == 1)
+                                    {
+                                        <label class="btn btn-outline-warning active">
+                                            <input asp-for="BulkOrder.BulkOrderStatus" type="radio" name="OrderStatus" value="@StaticDetails.OrderStatusOne" autocomplete="off" checked="checked" class="form-control"> @StaticDetails.OrderStatusInProgress
+                                        </label>
+
+                                        <label class="btn btn-outline-success">
+                                            <input asp-for="BulkOrder.BulkOrderStatus" type="radio" name="OrderStatus" value="@StaticDetails.OrderStatusTwo" autocomplete="off" class="form-control"> @StaticDetails.OrderStatusComplete
+                                        </label>
+
+                                        <label class="btn btn-outline-danger">
+                                            <input asp-for="BulkOrder.BulkOrderStatus" type="radio" name="OrderStatus" value="@StaticDetails.OrderStatusThree" autocomplete="off" class="form-control"> @StaticDetails.OrderStatusRejected
+                                        </label>
+                                    }
+                                    @* status compete *@
+                                    else if (ViewBag.OrderStatus == 2)
+                                    {
+                                        <label class="btn btn-outline-warning disabled">
+                                            <input asp-for="BulkOrder.BulkOrderStatus" type="radio" name="OrderStatus" value="@StaticDetails.OrderStatusOne" autocomplete="off" disabled="disabled" class="form-control"> @StaticDetails.OrderStatusInProgress
+                                        </label>
+
+                                        <label class="btn btn-outline-success active">
+                                            <input asp-for="BulkOrder.BulkOrderStatus" type="radio" name="OrderStatus" value="@StaticDetails.OrderStatusTwo" autocomplete="off" checked="checked" class="form-control"> @StaticDetails.OrderStatusComplete
+                                        </label>
+
+                                        <label class="btn btn-outline-danger">
+                                            <input asp-for="BulkOrder.BulkOrderStatus" type="radio" name="OrderStatus" value="@StaticDetails.OrderStatusThree" autocomplete="off" class="form-control"> @StaticDetails.OrderStatusRejected
+                                        </label>
+                                    }
+                                    @* status rejected *@
+                                    else if (ViewBag.OrderStatus == 3)
+                                    {
+
+                                        <label class="btn btn-outline-danger active">
+                                            <input asp-for="BulkOrder.BulkOrderStatus" id="4" type="radio" name="OrderStatus" value="@StaticDetails.OrderStatusThree" autocomplete="off" checked="checked" class="form-control"> @StaticDetails.OrderStatusRejected
+                                        </label>
+                                    }
+
+                                }
+                            </div>
+                        </div>
+                        <span asp-validation-for="@Model.BulkOrder.BulkOrderStatus" class="text-danger"></span>
+                    </div>
+                    <!-- Button inputs for the user-->
+                    <div class="form-group row">
+                        <div class="form-group ">
+                            <!-- button to update the bulk order status with the suppler that has been contacted-->
+                            <input type="submit" class="btn btn-primary" value="Update" />
+                            <!-- button that takes the user back to the list of bulk orders-->
+                            <a asp-action="Index" class="btn btn-success">Back to List</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- content right of page displays the contents of the order-->
+                <div class="col-4">
+                    <h5 class="text-info">
+                        Order Details
+                    </h5>
+                    <ul class="list-group-item mb-3">
+                        @{ foreach (var item in Model.BulkOrderItem)
+                            {
+
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="my-0">
+                                            Product: @item.FkProduct.ProductName
+                                        </h6>
+
+                                        <small class="text-muted">Quantity: @item.BulkOrderItemQuantity</small>
+                                        <br />
+                                        <small class="text-muted">Weight: @item.FkProduct.ProductWeight (kg)</small>
+                                    </div>
+                                </li>
+
+
+                            }
+                        }
+                    </ul>
+
+                </div>
+            </div>
+
+            <br />
+            <hr />
+
+
+            <div class="form-group row">
+                <div class="col-12">
+                    @{
+                        if (Model.SupplierContactedList.Count() > 0)
+                        {
+                            <h5 class="text-info">
+                                Contacted Suppliers
+                            </h5>
+                            <div class="list-group-item mb-3">
+                                @{ foreach (var item in Model.SupplierContactedList)
+                                    {
+                                        <input type="hidden" asp-for="@Model.BulkOrder.BulkOrderId" name="BulkOrderId" class="form-control" />
+                                        <div class="list-group-item d-flex justify-content-between">
+                                            <div class="col-3">
+                                                <h6 class="my-0">
+                                                    Supplier: @item.FkSuppler.SupplierName
+                                                    @{ if (item.SupplierContactedReply == true)
+                                                        {
+                                                            <label class="btn-success rounded"><i class="fas fa-check"></i></label>
+                                                        }
+                                                    }
+                                                </h6>
+
+                                                <small class="text-muted">Contact Date: @item.SupplierContactedDate</small>
+                                                <br />
+                                                <small class="text-muted">Quote: @item.SupplierContactedQuote</small>
+                                            </div>
+                                            @{
+                                                @*if the contacted reply bool is false display this*@
+                                                if (item.SupplierContactedReply == false)
+                                                {
+                                                    <div class="col-2">
+                                                        <label asp-for="@Model.SupplierContacted.SupplierContactedReply"></label>
+                                                        <input asp-for="@Model.SupplierContacted.SupplierContactedReply" type="checkbox" />
+                                                    </div>
+
+                                                    <div class="col-2">
+                                                        <label asp-for="SupplierContacted.SupplerContactedReplyDate"></label>
+
+                                                        <input asp-for="@Model.SupplierContacted.SupplerContactedReplyDate" class="form-control" name="QuoteUpdateDate" autocomplete="off" id="datepicker" style="width:125px" />
+                                                    </div>
+
+                                                    <div class="col-2">
+                                                        <label asp-for="@Model.SupplierContacted.SupplierContactedQuote"></label>
+                                                        <input type="number" autocomplete="off" asp-for="@Model.SupplierContacted.SupplierContactedQuote" name="QuoteUpdate" class="form-control" style="width:125px" />
+                                                        <span asp-validation-for="@Model.SupplierContacted.SupplierContactedQuote" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <button type="submit" asp-action="UpdateQuote" class="btn btn-success" asp-route-id="@item.SupplierContactedId">
+                                                            <i class="fas fa-angle-double-up"></i>
+                                                        </button>
+                                                        <button type="submit" asp-action="DeleteQuote" class="btn btn-danger" asp-route-id="@item.SupplierContactedId">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                }
+                                                @*if the contacted reply bool is true display this*@
+                                                else
+                                                {
+                                                    if (item.SupplierContactedDisplayToUser == false)
+                                                    {
+                                                        <div class="col-2">
+                                                            <label>To Customer</label>
+                                                            <input asp-for="@Model.SupplierContacted.SupplierContactedDisplayToUser" name="ToCustomer" type="checkbox" />
+                                                            @{
+                                                                decimal MarginPercentage = (Convert.ToDecimal(item.FkBulkOrder.BulkOrderMargin) - 1) * 100;
+                                                            }
+                                                        </div>
+                                                        @*if user us super admin they have the ability to chnage the profit margin*@
+                                                        @if (User.IsInRole(StaticDetails.SuperAdminUser))
+                                                        {
+                                                            <div class="col-2">
+                                                                <label asp-for="@Model.BulkOrder.BulkOrderMargin"></label>
+
+                                                                <input value="@MarginPercentage" name="Margin" class="form-control" style="width:80px" />
+                                                            </div>
+                                                        }
+                                                        @*if the user is not a super admin the margin input is disabled*@
+                                                        else
+                                                        {
+                                                            <div class="col-2">
+                                                                <label asp-for="@Model.BulkOrder.BulkOrderMargin"></label>
+
+                                                                <input value="@MarginPercentage" asp-route-id="Margin" class="form-control" style="width:80px" disabled />
+                                                            </div>
+                                                        }
+                                                        @*display the total payable by the customer*@
+                                                        <div class="col-2">
+                                                            @{
+                                                                decimal Profit = (Convert.ToDecimal(item.FkBulkOrder.BulkOrderMargin)) * (Convert.ToDecimal(item.SupplierContactedQuote));
+                                                            }
+                                                            <label>Total</label>
+                                                            <input asp-for="@Model.BulkOrder.BulkOrderProfit" value="£@Profit.ToString("0.00")" style="width:100px" disabled class="form-control" />
+                                                            <span asp-validation-for="@Model.BulkOrder.BulkOrderProfit" class="text-danger"></span>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <button type="submit" asp-action="FinaliseQuote" class="btn btn-success" asp-route-id="@item.SupplierContactedId">
+                                                                <i class="fas fa-angle-double-up"></i>
+                                                            </button>
+                                                            @if (User.IsInRole(StaticDetails.SuperAdminUser))
+                                                            {
+
+                                                                <button type="submit" asp-action="DeleteQuote" class="btn btn-danger" asp-route-id="@item.SupplierContactedId">
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </button>
+                                                                <button type="submit" asp-controller="ExtraDetails" class="btn btn-warning" asp-action="Index" asp-route-id="@Model.BulkOrder.BulkOrderId">
+                                                                    <i class="fas fa-info-circle"></i>
+                                                                </button>
+
+                                                            }
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="col-6">
+                                                            <lable class="text-success">Quote Submitted to Customer</lable>
+                                                        </div>
+                                                    }
+                                                }
+                                            }
+
+                                        </div>
+
+
+
+                                    }
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+
+
+        </div>
+        <br />
+
+    </form>
+
+
+
+
+    <!-- Start Modal -->
+    <!-- Modal Popup to hold the contact details for each selected supplier-->
+    <div class="modal fade" id="ModalPopup" tabindex="-1" role="dialog" aria-labelledby="ModalPopupLabel" aria-hidden="true">
+        <!-- define div tag as modal popup-->
+        <div class="modal-dialog" role="document">
+            <!-- Start Modal content-->
+            <div class="modal-content">
+                <!-- Start Modal header-->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalPopupLabel">Supplier Contact Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div><!-- End Modal header-->
+                <!-- Modal Popup body-->
+                <div class="modal-body">
+                    @{ @*foreach loop that loops through the supplier table
+                            and displays contact details for each item*@
+
+                    foreach (var item in Model.SupplierList)
+                    {
+
+
+                        @*formatting to a card display*@
+                        <div class="card">
+                            @*modal card header*@
+                            <div class="card-header">
+                                @*Displays the supplier name*@
+                                <h5>Supplier: @item.SupplierCompany</h5>
+                            </div>@*End modal card header*@
+                            @*main body of the modal popup*@
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    @*displays the supplier contact name*@
+                                    <h6><i class="fas fa-user"></i> @item.SupplierName</h6>
+                                </li>
+                                <li class="list-group-item">
+                                    @*displays the supplier contact number*@
+                                    <h6><i class="fas fa-tty"></i> @item.SupplierNumber</h6>
+                                </li>
+                                <li class="list-group-item">
+                                    @*Displays the supplier email*@
+                                    <h6><i class="fas fa-envelope"></i> @item.SupplierEmail</h6>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                        <br />
+                    }
+                    }
+
+                </div><!-- End Modal Popup body-->
+                <!-- start modal popup footer-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div><!--End modal footer-->
+
+            </div><!--End Modal Content-->
+        </div><!-- end modal popup div tag-->
+    </div><!-- End Modal -->
+</div>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <!--Script function that calls the javascript for a date picker with minimum date of 2 days ago and maximum of +7 days-->
+    <script>
+        $(function () {
+            $("#datepicker").datepicker({ minDate: -2, madDate: "+1W" })
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+

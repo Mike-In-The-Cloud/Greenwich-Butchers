@@ -1,0 +1,47 @@
+﻿@model IEnumerable<GreButchersEFCore_V2.Models.Category>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<br />
+@*div container to set the boarder*@
+<div class="border backgroundWhite">
+    <div class="row">
+        <div class="col-6">
+            @*page title*@
+            <h2 class="text-info">Category List</h2>
+        </div>
+        <div class="col-6 text-right">
+            @*Button to create a new category, leads to a new action witn the category contoller*@
+            <a asp-action="Create" class="btn btn-info"><i class="fas fa-folder-plus"></i>New Category</a>
+        </div>
+    </div>
+
+    <br />
+    <div>
+        <table class="table table-striped border">
+            <tr class="table-info">
+                <th>
+                    @*Displays the lable for category name from the model that has been passed to the view*@
+                    @Html.DisplayNameFor(c => c.CategoryName)
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+            @*for each loop that loops through the model passed to the view*@
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@*displays the category name from the model*@
+                        @Html.DisplayFor(m => item.CategoryName)
+                    </td>
+                    <td>
+                        @*repeating buttons to edit, view details or delete *@
+                        <partial name="_TableButtonPartial" model="item.CategoryId" />
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+

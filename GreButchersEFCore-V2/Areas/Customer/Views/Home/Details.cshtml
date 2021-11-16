@@ -1,0 +1,124 @@
+﻿
+@model GreButchersEFCore_V2.Models.Stock
+@using GreButchersEFCore_V2.Extensions
+<!-- added these using methods and injections to get the session data-->
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+<br />
+<div class="border backgroundWhite">
+    <h2 class="text-info">Product Details</h2>
+
+    <form method="post">
+        <div class="p-4 border rounded row">
+
+            <!--asp.net validation-->
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-8">
+                <div class="form-group row">
+                    <!-- Name of product-->
+                    <div class="col-4">
+                        <label asp-for="FkProduct.ProductName"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="FkProduct.ProductName" class="form-control" readonly />
+                    </div>
+
+                </div>
+                <!-- Price of product-->
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="FkProduct.ProductPrice"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="FkProduct.ProductPrice" class="form-control" readonly />
+                    </div>
+                </div>
+                <!-- Weight of product-->
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="FkProduct.ProductWeight"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="FkProduct.ProductWeight" class="form-control" readonly />
+                    </div>
+                </div>
+                <!-- type of product-->
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="FkProduct.FkCategory"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="FkProduct.FkCategory.CategoryName" class="form-control" readonly />
+                    </div>
+                </div>
+                <!-- product description-->
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="FkProduct.ProductDescription"></label>
+                    </div>
+                    <div class="col-8">
+                        <textarea asp-for="FkProduct.ProductDescription" class="form-control" readonly></textarea>
+                    </div>
+                </div>
+                <!-- display the stock in the Shop-->
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label>Shop Stock</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="StockShop" readonly class="form-control" />
+                    </div>
+                </div>
+                <!-- add to cart button-->
+                <div class="form-group row">
+                    <div class="col-4">
+
+                    </div>
+                    <div class="col-8">
+                        @{
+                            // bool to check if item is in the bag
+                            bool isInBag = false;
+                            // gets the session list using HttpContextAccessor previously injected
+                            List<int> lstCart = HttpContextAccessor.HttpContext.Session.Get<List<int>>("ssShoppingCart");
+                            // checks the session to see if the item id is in the session
+                            if (lstCart != null && lstCart.Contains(Model.FkProduct.ProductId))
+                            {
+                                // if the item is in the session set the bool value to true
+                                isInBag = true;
+                            }
+                        }
+
+                        @if (isInBag == true)
+                        {
+                            <button type="submit" value="Remove From Cart" asp-action="remove" asp-route-id="@Model.FkProduct.ProductId" class="btn btn-danger">Remove From Cart</button>
+                        }
+                        else
+                        {
+                            <button type="submit" value="Add To Cart" asp-route-id="@Model.FkProduct.ProductId" class="btn btn-primary">Add To Cart</button>
+                        }
+
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="col-1">
+                <!-- spacer-->
+            </div>
+            <!-- iamge display-->
+            <div class="col-3">
+                <img src="@Model.FkProduct.ProductImage" style="border-radius:5px; border:1px solid #bbb9b9;  width: 250px; height: 250px;" />
+            </div>
+            <br />
+            <div class="form-group">
+                <!-- hidden input label to pass the id to the shopping cart-->
+                <input hidden asp-for="FkProduct.ProductId" />
+                <a asp-action="Index" class="btn btn-success">Back to List</a>
+            </div>
+        </div>
+    </form>
+</div>
+

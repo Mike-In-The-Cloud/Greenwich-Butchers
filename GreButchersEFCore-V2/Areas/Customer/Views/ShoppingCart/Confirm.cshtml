@@ -1,0 +1,101 @@
+﻿@model IEnumerable<GreButchersEFCore_V2.Models.BulkOrderItem>
+@using GreButchersEFCore_V2.Utility
+@{
+    ViewData["Title"] = "Confirmation";
+}
+@{
+    string StatusValue = "";
+}
+
+<br />
+<div class="border backgroundWhite">
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-info">Order Has Been Submitted</h2>
+        </div>
+        <div class="text-success">
+            <p>
+                <h6>
+                    <i class="fas fa-info-circle"></i> Huzzah! We have received the order request! We will get in contact with your quote ASAP.
+                </h6>
+            </p>
+            <h6>
+                Also check back under the order history tab to check for progress and accept a quote we have given you.
+            </h6>
+        </div>
+    </div>
+
+    <br />
+    <div class="row">
+        <div class="col-4">
+            <table class="table table-striped border">
+                <tr class="table-info">
+                    <th>
+                        @Html.DisplayNameFor(c => c.FirstOrDefault().FkProduct.ProductName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(c => c.FirstOrDefault().BulkOrderItemQuantity)
+                    </th>
+
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => item.FkProduct.ProductName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.BulkOrderItemQuantity)
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="col-8">
+            <table class="table table-striped border">
+                <tr class="table-info">
+                    <th>
+                        @Html.DisplayNameFor(c => c.FirstOrDefault().FkBulkOrder.BulkOrderId)
+                    </th>
+                    <th>
+
+                        @Html.DisplayNameFor(c => c.FirstOrDefault().FkBulkOrder.BulkOrderStatus)
+
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(c => c.FirstOrDefault().FkBulkOrder.BulkOrderCreationDate)
+                    </th>
+                </tr>
+
+                <tr>
+                    <th>
+                        @Html.DisplayFor(m => m.FirstOrDefault().FkBulkOrder.BulkOrderId)
+                    </th>
+                    <th>
+                        @{int i = Model.FirstOrDefault().FkBulkOrder.BulkOrderStatus;
+
+                            if (i == 0)
+                            {
+                                StatusValue = StaticDetails.OrderStatusPending;
+                            }
+                            else
+                            {
+                                StatusValue = StaticDetails.OrderStatusError;
+                            }
+                        }
+                        <label><i class="fas fa-cogs"></i> @StatusValue  </label>
+
+
+                    </th>
+                    <th>
+                        <i class="fas fa-calendar-day"></i> @Html.DisplayFor(m => m.FirstOrDefault().FkBulkOrder.BulkOrderCreationDate)
+                    </th>
+                </tr>
+                
+
+            </table>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,113 @@
+﻿@model GreButchersEFCore_V2.Models.ViewModels.BulkOrderViewModel
+@using GreButchersEFCore_V2.Utility
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    string StatusValue = "";
+}
+
+
+<br />
+<div class="border backgroundWhite">
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-info">Bulk Order List</h2>
+        </div>
+        <div class="col-6 text-right">
+            <form asp-controller="BulkOrder" asp-action="Index" method="get">
+                <div class="form-group row col-8">
+
+                    <!-- input field, has the name id which is passed to the parameter-->
+                    <input type="number" name="id" placeholder="Search by Id" class="input-group-text" min="0">
+                    <!-- button to submit the filter -->
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Go!
+                    </button>
+                </div>
+            </form><!-- end search form-->
+        </div>
+    </div>
+
+    <br />
+    <div class="row">
+        <table class="table table-striped border">
+            <tr class="table-info">
+                <th>
+                    Order ID
+                </th>
+                <th>
+                    Creation Date
+                </th>
+                <th>
+                    Number Of Items
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Completetion Date
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model.BulkOrderList)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(m => item.BulkOrderId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => item.BulkOrderCreationDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => item.BulkOrderItem.Count)
+                    </td>
+                    <td>
+                        @{
+                            int i = item.BulkOrderStatus;
+
+                            if (i == 0)
+                            {
+                                StatusValue = StaticDetails.OrderStatusPending;
+                                <label class="text-secondary"><i class="fas fa-cogs"></i> @StatusValue  </label>
+                            }
+                            else if (i == 1)
+                            {
+                                StatusValue = StaticDetails.OrderStatusInProgress;
+                                <label class="text-warning"><i class="fas fa-tasks"></i> @StatusValue</label>
+                            }
+                            else if (i == 2)
+                            {
+                                StatusValue = StaticDetails.OrderStatusComplete;
+                                <label class="text-success"><i class="fas fa-check-circle"></i> @StatusValue</label>
+                            }
+                            else if (i == 3)
+                            {
+                                StatusValue = StaticDetails.OrderStatusRejected;
+                                <label class="text-danger"><i class="fas fa-times-circle"></i> @StatusValue</label>
+                            }
+                            else
+                            {
+                                StatusValue = StaticDetails.OrderStatusError;
+                                <label class="text-danger"><i class="fas fa-check-circle"></i> @StatusValue</label>
+                            }
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => item.BulkOrderCompletionDate)
+                    </td>
+                    <td>
+                      
+                            <partial name="_OrderHistoryDetails" model="item.BulkOrderId" />
+                        
+                        </td>
+                    </tr>
+                }
+        </table>
+    </div>
+</div>
+
+

@@ -1,0 +1,64 @@
+﻿@model List<GreButchersEFCore_V2.Models.Product>
+
+@{
+    ViewData["Title"] = "The Meat";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br /> <br />
+<div class="border backgroundWhite">
+    <!-- index page for the site, this will show all the products in a grid format-->
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-info">The Meat</h2>
+        </div>
+        <div class="col-6 justify-content-end">
+            <form asp-controller="Home" asp-action="Products" method="get">
+                <div class="form-group row">
+
+                    <!-- input field, has the name id which is passed to the parameter-->
+                    <input type="text" name="id" placeholder="Search..." class="input-group-text">
+                    <!-- button to submit the filter -->
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Go!
+                    </button>
+                </div>
+            </form><!-- end search form-->
+        </div>
+        <br />
+        <!-- this is the search funtion input area-->
+
+        <div class="row">
+            <!-- foreach loop will itterate through the model-->
+            @foreach (var product in Model)
+            {<!-- card layout of each product-->
+                
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <!-- card header-->
+                        <div class="card-header">
+                            <!-- add styling to the header-->
+                            <h4 class="my-0 font-weight-normal"></h4>
+                            <label style="font-size:23px;color:steelblue;">
+                                @product.ProductName
+                            </label>
+                        </div>
+                        <!-- image for each product -->
+                        <img class="card-img-top" style="height:280px;" src="@product.ProductImage" alt="Product Image" />
+                        <!-- display information for the prod-->
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <!-- product price-->
+                                <label style="font-size:20px; color:#a51313"><b>£@product.ProductPrice.ToString()</b></label>
+                            </div>
+                            <!-- button to go to more details of the product, has the id of the product so it can
+                            be passed to details page-->
+                            <a asp-action="Details" asp-controller="Home" class="btn btn-success pull-right btn-outline-info" asp-route-id="@product.ProductId">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                
+            }
+        </div>
+    </div>
+</div>

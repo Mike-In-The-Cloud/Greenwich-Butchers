@@ -1,0 +1,102 @@
+﻿@model GreButchersEFCore_V2.Models.ViewModels.ExtraDetailsViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<div class="border backgroundWhite">
+    <h2 class="text-info">Edit History For Order: @Model.BulkOrder.BulkOrderId</h2>
+    <div class="p-4 border rounded">
+        <h6 class="text-info">First Edited By</h6>
+        <div class="form-group row">
+
+            <div class="col-2">
+                <label asp-for="ModifiedBy.ModifiedByFirst"></label>
+            </div>
+            <div class="col-5">
+                @{ string AppendedName = @Model.ApplicationUser.FirstName + " " + Model.ApplicationUser.Surname; }
+                <input value="@AppendedName" disabled class="form-control" />
+            </div>
+
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="ModifiedBy.ModifiedByDate"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="ModifiedBy.ModifiedByDate" disabled class="form-control" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="ApplicationUser.Email"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="ApplicationUser.Email" disabled class="form-control" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="ApplicationUser.PhoneNumber"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="ApplicationUser.PhoneNumber" disabled class="form-control" />
+            </div>
+        </div>
+        <hr />
+
+        @{ if (Model.ModifiedByList.Count > 1)
+            {
+                int EditCount = Model.ModifiedByList.Count;
+                int Count = 2;
+                <h6 class="text-info">All Other Edits</h6>
+                <h6 class="text-info">Total Edits: @EditCount</h6>
+                <br />
+                @foreach (var item in Model.ModifiedByList)
+                {
+                    <div class="form-group row">
+                        <div class="col-2">
+                            <h6 class="text-success">Edit Number: @Count</h6>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-2">
+                            <label asp-for="ApplicationUser.FirstName"></label>
+                        </div>
+                        <div class="col-5">
+                            @{ string AppendNameList = @Model.ModifiedByList.FirstOrDefault().FkEmployee.ApplicationUser.FirstName + " " + Model.ModifiedByList.FirstOrDefault().FkEmployee.ApplicationUser.Surname;}
+                            <input value="@AppendNameList" disabled class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-2">
+                            <label asp-for="ModifiedBy.ModifiedByDate"></label>
+                        </div>
+                        <div class="col-5">
+                            <input asp-for="ModifiedByList.FirstOrDefault().ModifiedByDate" disabled class="form-control" />
+                        </div>
+                    </div>
+                    <hr />
+                    Count++;
+
+                }
+
+            }
+            else
+            {
+                <div class="text-success font-weight-bold">
+                    No other edit actions have taken place.
+                </div>
+            }
+
+        }
+        <br />
+        <div class="form-group">
+
+            <a asp-controller="BulkOrder" asp-action="Edit" asp-route-id="@Model.BulkOrder.BulkOrderId" class="btn btn-success">Back to List</a>
+        </div>
+    </div>
+</div>
+
